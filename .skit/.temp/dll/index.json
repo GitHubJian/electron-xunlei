@@ -1,10 +1,5 @@
 {
-  "choiceness": {
-    "js": "/js/choiceness.js"
-  },
-  "": {
-    "html": "/choiceness.html",
-    "ico": "/favicon.ico",
+  "vendor": {
     "js": "/js/vendor.js"
   }
 }
