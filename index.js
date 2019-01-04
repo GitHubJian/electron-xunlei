@@ -27,31 +27,34 @@ function createWindow() {
 }
 
 function createLoginWindow(parentWindow) {
-  let {
-    x: parentX,
-    y: parentY,
-    width: parentWidth,
-    height: parentHeight
-  } = parentWindow.getBounds()
+  // let {
+  //   x: parentX,
+  //   y: parentY,
+  //   width: parentWidth,
+  //   height: parentHeight
+  // } = parentWindow.getBounds()
 
-  let x = (parentWidth - 400) / 2 + parentX,
-    y = (parentHeight - 200) / 2 + parentY
+  // let x = (parentWidth - 400) / 2 + parentX,
+  //   y = (parentHeight - 200) / 2 + parentY
 
   loginWindow = new BrowserWindow({
     title: 'Login',
-    width: 400,
-    height: 200,
-    x,
-    y,
+    width: 356,
+    height: 392,
+    // x,
+    // y,
     // center: true,
     fullscreen: false,
     fullscreenable: false,
-    resizable: false,
+    // resizable: false,
     movable: false,
     parent: parentWindow,
     // closable: true,
-    modal: false
+    modal: false,
+    titleBarStyle:'hidden'
   })
+
+  loginWindow.webContents.openDevTools()
 
   loginWindow.loadFile('./.skit/dist/login.html')
 
@@ -60,7 +63,7 @@ function createLoginWindow(parentWindow) {
   })
 }
 
-app.on('ready', createWindow)
+app.on('ready', createLoginWindow)
 
 app.on('window-all-closed', function() {
   if (process.platform !== 'darwin') {

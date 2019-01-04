@@ -1,4 +1,5 @@
 body,
+div,
 h1,
 h2,
 h3,
@@ -15,10 +16,12 @@ form,
 th,
 td,
 figure,
-figcaption {
+figcaption,
+input {
   margin: 0;
   padding: 0;
   border: 0;
+  box-sizing: border-box;
 }
 
 h1,
