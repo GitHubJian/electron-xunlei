@@ -1,28 +1,34 @@
 const root = process.cwd()
 const path = require('path')
+const utils = require('./webpack/utils')
 
-const pathConfig = {
+let pathConfig = {
   root, // 根目录
-  temp: path.resolve(root, './.skit'), // 根目录
-  pages: path.resolve(root, './src/pages'), // 
-  prepack: path.resolve(root, './.skit/prepack'), //
-  dll: path.resolve(root, './.skit/dll'), // dll文件夹
-  dist: path.resolve(root, './dist'), // 
-  nodeModules: path.resolve(root, './node_modules'), // 
-  favicon: path.resolve(root, './favicon.ico') // 
+  src: path.resolve(root, './src'),
+  pages: path.resolve(root, './src/pages'),
+  prepack: path.resolve(root, './.skit/.temp/prepack')
 }
 
+const entry = utils.createEntry(pathConfig.src, pathConfig.prepack)
+const alias = utils.createAlias(pathConfig.src)
+
 module.exports = {
-  path: pathConfig,
+  path: {},
   conf: {
-    entry: {},
-    outputPath: pathConfig.dist,
-    alias: {}
+    entry: entry,
+    alias: alias,
+    html: {
+      title: 'Sogou Test',
+      favicon: path.resolve(root, './favicon.ico'),
+      chunks: ['vendor']
+    }
   },
-  dllConf: {
+  dll: {
     entry: {
       vendor: ['vue']
-    },
-    outputPath: pathConfig.dll
+    }
+  },
+  utils: {
+    type2Color: {}
   }
 }

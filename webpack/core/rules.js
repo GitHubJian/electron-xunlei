@@ -97,6 +97,5 @@ const rules4Dev = [
 ].concat(rules)
 
 module.exports = {
-  extractCSS,
   rules: isDevelopment ? rules4Dev : rules4Prod
 }

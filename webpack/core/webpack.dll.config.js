@@ -1,27 +1,31 @@
-const LIBRARY_NAME = '__[name]_[chunkhash]__'
-/* -------------------- */
-const path = require('path')
+/* ---------------------------------------- */
+
+const { path: pathConfig } = require('./../config.js')
 const {
-  path: pathConfig,
-  dllConf: { entry, outputPath }
-} = require('./config.js')
-const { NODE_ENV } = process.env
+  dll: { entry }
+} = require(pathConfig.configPath)
+
+/* ---------------------------------------- */
+
+const { NODE_ENV } = process.env || 'development'
 const [isDevelopment, isProduction] = [
   NODE_ENV === 'development',
   NODE_ENV === 'production'
 ]
-/* -------------------- */
+const path = require('path')
 const webpack = require('webpack')
 const extractCSS = require('./extract.js')
-const AssetsWebpackPlugin = require('assets-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const AssetsWebpackPlugin = require('assets-webpack-plugin')
+
+const LIBRARY_NAME = '__[name]_[chunkhash]__'
 
 const webpackConfig = {
-  mode: !isProduction ? 'development' : 'production',
+  mode: isProduction ? 'production' : 'development',
   entry,
   output: {
-    filename: 'js/[name].js',
-    path: outputPath,
+    filename: `js/[name].js`,
+    path: pathConfig.dll,
     publicPath: '/',
     library: LIBRARY_NAME
   },
@@ -37,14 +41,7 @@ const webpackConfig = {
       {
         test: /\.css$/,
         use: extractCSS.extract({
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                minimize: true
-              }
-            }
-          ]
+          use: ['css-loader']
         })
       },
       {
@@ -54,7 +51,7 @@ const webpackConfig = {
             loader: 'url-loader',
             options: {
               limit: 10000,
-              name: 'images/[name].[ext]'
+              name: 'image/[name].[ext]'
             }
           }
         ]
@@ -65,19 +62,19 @@ const webpackConfig = {
     new webpack.ProgressPlugin(),
     new webpack.EnvironmentPlugin(['NODE_ENV']),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment\/min$/),
+    new CleanWebpackPlugin([pathConfig.dll], {
+      root: pathConfig.root,
+      verbose: false
+    }),
     extractCSS,
     new webpack.DllPlugin({
-      path: path.resolve(outputPath, '[name].json'),
+      path: path.resolve(pathConfig.dll, '[name].json'),
       name: LIBRARY_NAME
     }),
     new AssetsWebpackPlugin({
-      path: outputPath,
+      path: pathConfig.dll,
       filename: 'index.json',
       prettyPrint: true
-    }),
-    new CleanWebpackPlugin([outputPath], {
-      root: pathConfig.root,
-      verbose: false
     })
   ],
   stats: {
@@ -88,4 +85,4 @@ const webpackConfig = {
   }
 }
 
-module.exports = { webpackConfig }
+module.exports = { entry, webpackConfig }

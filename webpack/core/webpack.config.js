@@ -1,38 +1,51 @@
+const { path: pathConfig } = require('./../config.js')
+const {
+  conf: { entry, alias, html: htmlOptions }
+} = require(pathConfig.configPath)
 
-const { entry } = require('./../entry.js')
-const { alias } = require('./../alias')
-const { assets: htmlIncludeAssets } = require('./../htmlIncludeAssets.js')
-/* -------------------- */
-const { path: pathConfig } = require('./config')
+/* ---------------------------------------- */
 const { NODE_ENV } = process.env || 'development'
+const [isDevelopment, isProduction] = [
+  NODE_ENV === 'development',
+  NODE_ENV === 'production'
+]
+/* ---------------------------------------- */
+
 const path = require('path')
-const { rules, extractCSS } = require('./rules')
+
+const { rules } = require('./rules')
+const { htmlIncludeAssets } = require('./htmlIncludeAssets.js')
+const extractCSS = require('./extract.js')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const AssetsWebpackPlugin = require('assets-webpack-plugin')
+const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const HtmlWebpackPluginList = Object.entries(entry).map(([k, v]) => {
+  let { title, chunks, favicon } = htmlOptions
+  let chunksArr = Array.isArray(chunks) ? chunks.concat([k]) : [k]
+
   return new HtmlWebpackPlugin({
-    filename: path.resolve(pathConfig.static, `${k}.html`),
+    filename: path.resolve(pathConfig.dist, `${k}.html`),
     template: pathConfig.template,
-    title: '测试',
-    favicon: pathConfig.favicon,
-    chunks: ['vendor', 'global', k],
+    title: title || 'Skit Test',
+    favicon: favicon || pathConfig.favicon,
+    chunks: chunksArr,
     chunksSortMode: 'dependency',
     NODE_ENV
   })
 })
 
 const webpackConfig = {
-  mode: 'production',
-  entry: Object.assign({ global: pathConfig.global }, entry),
+  mode: isProduction ? 'production' : 'development',
+  entry,
   output: {
     filename: 'js/[name].js',
-    path: pathConfig.static,
+    path: pathConfig.dist,
     publicPath: '/',
     chunkFilename: 'js/[name].js'
   },
