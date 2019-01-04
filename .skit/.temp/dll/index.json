@@ -1,7 +1,6 @@
 {
   "choiceness": {
-    "js": "/js/choiceness.js",
-    "css": "/css/choiceness.css"
+    "js": "/js/choiceness.js"
   },
   "": {
     "html": "/choiceness.html",
