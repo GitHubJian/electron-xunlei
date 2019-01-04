@@ -1,5 +1,5 @@
 <template>
-  <div>Hello, world</div>
+  <div class="layout">Hello, world</div>
 </template>
 <script>
 export default {
@@ -8,3 +8,14 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.layout {
+  font-size: 20px;
+}
+
+
+.a{
+  background:red;
+}
+</style>
